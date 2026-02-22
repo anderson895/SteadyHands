@@ -107,3 +107,6 @@ Steadyhand/
 - **react-native-svg** (tracing canvas)
 - **react-native-gesture-handler** (touch input)
 - **TypeScript** throughout
+
+
+https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/5f0857a5-d114-46dd-a629-5999ab6d2b04
