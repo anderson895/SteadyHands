@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  Alert, KeyboardAvoidingView, ScrollView, ActivityIndicator,
+  Alert, KeyboardAvoidingView, ScrollView, ActivityIndicator, Image,
 } from 'react-native';
 import { Link, router } from 'expo-router';
 import { loginUser } from '../../src/database/db';
@@ -41,16 +41,21 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+
         {/* Branding */}
         <View style={styles.brand}>
-          <Text style={styles.brandEmoji}>✋</Text>
+          <Image
+            source={require('../../assets/icon.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.brandTitle}>Steadyhand</Text>
           <Text style={styles.brandSub}>Motor skills therapy for every day</Text>
         </View>
 
         {/* Card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Welcome back!</Text>
+          <Text style={styles.cardTitle}>Welcome back! 👋</Text>
           <Text style={styles.cardSub}>Sign in to continue your therapy</Text>
 
           <Text style={styles.label}>USERNAME</Text>
@@ -83,9 +88,15 @@ export default function LoginScreen() {
             {loading ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.btnText}>🚀  Sign In</Text>
+              <Text style={styles.btnText}>Sign In →</Text>
             )}
           </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or</Text>
+            <View style={styles.dividerLine} />
+          </View>
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don't have an account? </Text>
@@ -96,6 +107,9 @@ export default function LoginScreen() {
             </Link>
           </View>
         </View>
+
+        <Text style={styles.version}>v1.0.0 • Steadyhand Therapy</Text>
+
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -103,11 +117,39 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  scroll: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
-  brand: { alignItems: 'center', marginBottom: 36 },
-  brandEmoji: { fontSize: 68, marginBottom: 10 },
-  brandTitle: { fontSize: 42, fontWeight: '800', color: colors.primary, letterSpacing: -1 },
-  brandSub: { fontSize: 16, color: colors.textLight, marginTop: 6 },
+  scroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    paddingVertical: 48,
+  },
+
+  // Branding
+  brand: { alignItems: 'center', marginBottom: 40 },
+  logo: {
+  width: 160,   // dati 100
+  height: 160,  // dati 100
+  borderRadius: 32,  // slightly larger radius para proportional
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.12,
+  shadowRadius: 10,
+},
+  brandTitle: {
+    fontSize: 42,
+    fontWeight: '800',
+    color: colors.primary,
+    letterSpacing: -1,
+    marginBottom: 6,
+  },
+  brandSub: {
+    fontSize: 15,
+    color: colors.textLight,
+    letterSpacing: 0.2,
+  },
+
+  // Card
   card: {
     backgroundColor: colors.white,
     borderRadius: 28,
@@ -118,11 +160,22 @@ const styles = StyleSheet.create({
     elevation: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
   },
-  cardTitle: { fontSize: fonts.heading, fontWeight: '800', color: colors.text, marginBottom: 4 },
-  cardSub: { fontSize: 15, color: colors.textLight, marginBottom: 28 },
+  cardTitle: {
+    fontSize: fonts.heading,
+    fontWeight: '800',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  cardSub: {
+    fontSize: 15,
+    color: colors.textLight,
+    marginBottom: 28,
+  },
+
+  // Form
   label: {
     fontSize: 11,
     fontWeight: '700',
@@ -137,25 +190,61 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 18,
     paddingVertical: 14,
-    fontSize: 17,
+    fontSize: 16,
     color: colors.text,
     backgroundColor: colors.background,
   },
+
+  // Button
   btn: {
     backgroundColor: colors.primary,
     borderRadius: 16,
     paddingVertical: 18,
     alignItems: 'center',
     marginTop: 28,
-    elevation: 3,
+    elevation: 4,
     shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
   },
   btnDisabled: { opacity: 0.6 },
-  btnText: { color: '#fff', fontSize: 19, fontWeight: '700' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
+  btnText: { color: '#fff', fontSize: 18, fontWeight: '700', letterSpacing: 0.5 },
+
+  // Divider
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 24,
+    marginBottom: 4,
+    gap: 10,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border,
+  },
+  dividerText: {
+    fontSize: 13,
+    color: colors.textLight,
+    fontWeight: '600',
+  },
+
+  // Footer
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
   footerText: { fontSize: 15, color: colors.textLight },
   footerLink: { fontSize: 15, color: colors.primary, fontWeight: '700' },
+
+  // Version tag
+  version: {
+    marginTop: 28,
+    fontSize: 12,
+    color: colors.textLight,
+    opacity: 0.6,
+    letterSpacing: 0.5,
+  },
 });
