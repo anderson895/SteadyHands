@@ -108,7 +108,8 @@ Steadyhand/
 - **react-native-gesture-handler** (touch input)
 - **TypeScript** throughout
 
-
+npm install -g eas-cli
+eas build:configure
 npx expo prebuild --clean
 eas build -p android --profile preview
 
