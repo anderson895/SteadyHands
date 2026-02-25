@@ -109,4 +109,8 @@ Steadyhand/
 - **TypeScript** throughout
 
 
-https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/5f0857a5-d114-46dd-a629-5999ab6d2b04
+npx expo prebuild --clean
+eas build -p android --profile preview
+
+<!-- https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/5f0857a5-d114-46dd-a629-5999ab6d2b04 -->
+https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/d4a31969-709a-412e-86ac-ea2f97f692ad
