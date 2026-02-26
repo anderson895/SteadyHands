@@ -114,4 +114,11 @@ npx expo prebuild --clean
 eas build -p android --profile preview
 
 <!-- https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/5f0857a5-d114-46dd-a629-5999ab6d2b04 -->
-https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/d4a31969-709a-412e-86ac-ea2f97f692ad
+<!-- https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/d4a31969-709a-412e-86ac-ea2f97f692ad -->
+
+
+### Downloadble link
+
+https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/3ae720a2-d1c1-4867-b239-d241e752418b
+
+https://drive.google.com/file/d/1edlBDQCEzCUBQnFS_crg2YWpo1FTP8vb/view?usp=sharing

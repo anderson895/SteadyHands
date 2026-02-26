@@ -47,9 +47,9 @@ export default function ProfileScreen() {
       </View>
 
       <View style={s.aboutCard}>
-        <Text style={s.aboutTitle}>💡  About Steadyhand</Text>
+        <Text style={s.aboutTitle}>💡  About SteadyHands</Text>
         <Text style={s.aboutText}>
-          Steadyhand helps cerebral palsy patients build motor skills through guided tracing,
+          SteadyHands helps cerebral palsy patients build motor skills through guided tracing,
           shape drawing, and connect-the-dots activities. Track your progress and celebrate
           every achievement!
         </Text>

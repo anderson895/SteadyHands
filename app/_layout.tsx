@@ -23,7 +23,7 @@ export default function RootLayout() {
     return (
       <View style={styles.splash}>
         <Text style={styles.splashEmoji}>🌟</Text>
-        <Text style={styles.splashTitle}>Steadyhand</Text>
+        <Text style={styles.splashTitle}>SteadyHands</Text>
         <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 24 }} />
         <Text style={styles.splashSub}>Loading your app...</Text>
       </View>

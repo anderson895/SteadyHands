@@ -44,12 +44,12 @@ export default function LoginScreen() {
 
         {/* Branding */}
         <View style={styles.brand}>
-          <Image
-            source={require('../../assets/icon.png')}
+          {/* <Image
+            source={require('../../assets/logo.jpg')}
             style={styles.logo}
             resizeMode="contain"
-          />
-          <Text style={styles.brandTitle}>Steadyhand</Text>
+          /> */}
+          <Text style={styles.brandTitle}>SteadyHands</Text>
           <Text style={styles.brandSub}>Motor skills therapy for every day</Text>
         </View>
 
@@ -108,7 +108,7 @@ export default function LoginScreen() {
           </View>
         </View>
 
-        <Text style={styles.version}>v1.0.0 • Steadyhand Therapy</Text>
+        <Text style={styles.version}>v1.1.0 • SteadyHands Therapy</Text>
 
       </ScrollView>
     </KeyboardAvoidingView>

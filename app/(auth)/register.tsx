@@ -67,7 +67,7 @@ export default function RegisterScreen() {
         <View style={styles.brand}>
           <Text style={styles.brandEmoji}>✋</Text>
           <Text style={styles.brandTitle}>Create Account</Text>
-          <Text style={styles.brandSub}>Join Steadyhand today</Text>
+          <Text style={styles.brandSub}>Join SteadyHands today</Text>
         </View>
 
         <View style={styles.card}>
