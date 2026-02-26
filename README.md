@@ -115,6 +115,6 @@ eas build -p android --profile preview
 
 ### Downloadble link
 
-https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/3ae720a2-d1c1-4867-b239-d241e752418b
+https://expo.dev/accounts/padillajoshuaanderson.pdm/projects/Steadyhand/builds/881d4b64-4b58-417b-86a7-0b03ef9aeabd
 
-https://drive.google.com/file/d/1edlBDQCEzCUBQnFS_crg2YWpo1FTP8vb/view?usp=sharing
+https://drive.google.com/file/d/14EbFAy3SRGmqL3qtBsBZAPnVIV6Z16Ce/view?usp=sharing

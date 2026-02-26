@@ -3,7 +3,7 @@
     "name": "SteadyHands",
     "slug": "Steadyhand",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/logo.jpg",
     "scheme": "SteadyHands",
     "userInterfaceStyle": "automatic",
