@@ -1,7 +1,3 @@
-# Steadyhand 🤚
-### Cerebral Palsy Therapy App — React Native + Expo Router + SQLite
-
----
 
 ## Setup
 
