@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { View, StyleSheet, PanResponder, Text, TouchableOpacity } from 'react-native';
 import Svg, { Path, Circle, Text as SvgText, Line, G, Polyline } from 'react-native-svg';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/theme';
 import { calculateAccuracy } from '../utils/accuracyEngine';
 import ResultOverlay from './ResultOverlay';
@@ -9,10 +10,16 @@ const W = 420;
 const H = 330;
 const STROKE = 14;
 
-// Dense waypoints per letter/number so the accuracy engine has enough
-// reference points to measure proximity correctly.
 const LETTER_GUIDES: Record<string, [number, number][]> = {
-  A: [[210,40],[175,112],[155,170],[120,285],[210,40],[245,112],[265,170],[300,285],[148,195],[172,195],[210,195],[248,195],[272,195]],
+  // ✅ FIXED A — left leg from apex, right leg from apex, then crossbar
+  A: [
+    // Left leg: top-center apex → bottom-left
+    [210,40],[195,68],[178,100],[162,135],[145,170],[130,210],[118,248],[108,285],
+    // Right leg: top-center apex → bottom-right
+    [210,40],[225,68],[242,100],[258,135],[275,170],[290,210],[302,248],[312,285],
+    // Crossbar at ~60% height, left → right
+    [132,195],[155,195],[178,195],[210,195],[242,195],[265,195],[288,195],
+  ],
   B: [[120,40],[120,285],[120,40],[175,42],[210,48],[235,62],[248,85],[248,105],[238,125],[215,138],[120,138],[215,138],[240,152],[255,172],[255,195],[242,218],[218,242],[188,260],[155,268],[120,268]],
   C: [[295,88],[270,60],[242,45],[210,38],[175,42],[145,55],[118,78],[100,108],[92,142],[92,178],[102,212],[120,242],[148,265],[178,278],[210,285],[245,280],[272,265],[292,248]],
   D: [[120,40],[120,285],[120,40],[162,42],[200,50],[232,65],[258,88],[272,118],[278,148],[278,175],[268,205],[248,232],[222,252],[192,265],[158,272],[120,272]],
@@ -24,20 +31,49 @@ const LETTER_GUIDES: Record<string, [number, number][]> = {
   J: [[255,40],[300,40],[300,100],[300,162],[300,220],[295,248],[278,268],[252,280],[220,285],[188,280],[162,262],[148,238]],
   K: [[120,40],[120,100],[120,162],[120,220],[120,285],[120,162],[162,132],[205,100],[255,65],[295,40],[120,162],[165,192],[208,222],[255,255],[295,285]],
   L: [[120,40],[120,100],[120,162],[120,220],[120,285],[165,285],[210,285],[255,285],[280,285]],
-  M: [[120,40],[120,100],[120,162],[120,220],[120,285],[120,40],[165,90],[210,135],[255,90],[300,40],[300,100],[300,162],[300,220],[300,285]],
-  N: [[120,40],[120,100],[120,162],[120,220],[120,285],[120,40],[165,82],[210,125],[255,168],[300,210],[300,285],[300,220],[300,162],[300,100],[300,40]],
+  M: [[120,40],[120,100],[120,162],[120,220],[120,285],[120,40],[162,85],[195,128],[210,148],[225,128],[258,85],[300,40],[300,100],[300,162],[300,220],[300,285]],
+  // ✅ FIXED N — left vertical, true top-left→bottom-right diagonal, right vertical
+  N: [
+    // Left vertical
+    [120,40],[120,80],[120,125],[120,170],[120,215],[120,285],
+    // Diagonal: top-left corner down to bottom-right corner
+    [120,40],[145,72],[172,108],[200,148],[228,188],[258,228],[288,268],[300,285],
+    // Right vertical
+    [300,40],[300,80],[300,125],[300,170],[300,215],[300,285],
+  ],
   O: [[210,40],[172,45],[142,62],[115,88],[100,118],[92,150],[92,178],[100,210],[118,240],[142,262],[172,278],[210,285],[248,278],[278,262],[302,240],[318,210],[325,178],[325,150],[318,118],[302,88],[278,62],[248,45],[210,40]],
   P: [[120,40],[120,100],[120,162],[120,220],[120,285],[120,40],[175,42],[215,52],[245,70],[258,95],[258,120],[245,145],[215,158],[175,165],[120,165]],
-  Q: [[210,40],[172,45],[142,62],[115,88],[100,118],[92,150],[92,178],[100,210],[118,240],[142,262],[172,278],[210,285],[248,278],[278,262],[302,240],[318,210],[325,178],[325,150],[318,118],[302,88],[278,62],[248,45],[210,40],[245,248],[268,265],[295,285],[310,298]],
+  // ✅ FIXED Q — complete oval then tail clearly extending outside to bottom-right
+  Q: [
+    // Full oval
+    [210,40],[172,45],[142,62],[115,88],[100,118],[92,150],[92,178],
+    [100,210],[118,240],[142,262],[172,278],[210,285],[248,278],
+    [278,262],[302,240],[318,210],[325,178],[325,150],
+    [318,118],[302,88],[278,62],[248,45],[210,40],
+    // Tail sweeping out from lower-right of circle
+    [238,255],[255,264],[272,275],[290,287],[308,300],[322,312],
+  ],
   R: [[120,40],[120,100],[120,162],[120,220],[120,285],[120,40],[175,42],[215,52],[245,70],[258,95],[258,120],[245,145],[215,158],[175,165],[120,165],[165,198],[205,225],[248,258],[285,285]],
   S: [[295,82],[272,58],[248,45],[218,38],[185,40],[158,52],[135,72],[122,100],[122,128],[135,152],[162,168],[195,178],[228,188],[258,202],[278,222],[285,248],[278,268],[258,280],[228,288],[195,285],[162,278],[138,262],[118,245]],
   T: [[120,40],[165,40],[210,40],[255,40],[300,40],[210,40],[210,100],[210,162],[210,220],[210,285]],
   U: [[120,40],[120,100],[120,162],[120,205],[122,230],[132,255],[150,272],[175,283],[210,285],[245,283],[270,272],[288,255],[298,230],[300,205],[300,162],[300,100],[300,40]],
-  V: [[120,40],[145,88],[170,135],[190,182],[210,230],[210,285],[230,230],[250,182],[270,135],[285,88],[300,40]],
-  W: [[120,40],[135,90],[155,148],[175,205],[195,262],[210,285],[225,262],[245,205],[265,148],[285,90],[300,40]],
+  // ✅ FIXED V — wide open angle, single sharp bottom tip at center
+  V: [
+    // Left arm: top-left → center bottom tip
+    [108,40],[125,75],[142,112],[160,150],[178,188],[195,225],[205,258],[210,285],
+    // Right arm: center bottom tip → top-right
+    [210,285],[215,258],[228,225],[245,188],[262,150],[280,112],[296,75],[312,40],
+  ],
+  // W — two valleys + middle peak
+  W: [
+    [105,40],[118,78],[130,118],[142,160],[152,200],[160,238],[166,265],[172,285],
+    [182,255],[192,220],[200,188],[207,158],[210,138],
+    [213,158],[220,188],[228,220],[238,255],[248,285],
+    [254,265],[260,238],[270,200],[282,160],[294,118],[305,78],[318,40],
+  ],
   X: [[120,40],[148,72],[175,105],[200,135],[235,175],[265,218],[285,248],[300,285],[210,162],[120,285],[148,255],[175,225],[200,195],[235,155],[265,108],[285,75],[300,40]],
   Y: [[120,40],[148,72],[175,105],[200,138],[210,162],[300,40],[272,72],[248,105],[225,138],[210,162],[210,220],[210,285]],
-  Z: [[120,40],[175,40],[228,40],[280,40],[300,40],[278,62],[255,88],[228,118],[200,148],[172,178],[148,205],[125,232],[120,258],[120,285],[175,285],[228,285],[280,285],[300,285]],
+  Z: [[120,40],[175,40],[228,40],[280,40],[300,40],[272,68],[245,98],[215,132],[185,165],[155,198],[128,232],[120,258],[120,285],[175,285],[228,285],[280,285],[300,285]],
 };
 
 const NUMBER_GUIDES: Record<string, [number, number][]> = {
@@ -169,9 +205,13 @@ export default function TracingCanvas({ label, labelType = 'letter', onComplete 
       </View>
 
       <View style={s.controls}>
-        <Text style={s.hint}>✏️  Follow the dotted guide line</Text>
+        <View style={s.hintRow}>
+          <Ionicons name="pencil-outline" size={15} color={colors.textLight} style={{ marginRight: 5 }} />
+          <Text style={s.hint}>Follow the dotted guide line</Text>
+        </View>
         <TouchableOpacity style={s.clearBtn} onPress={handleTryAgain} activeOpacity={0.8}>
-          <Text style={s.btnTxt}>🗑️  Clear</Text>
+          <Ionicons name="trash-outline" size={16} color="#fff" style={{ marginRight: 6 }} />
+          <Text style={s.btnTxt}>Clear</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[s.doneBtn, strokes.length === 0 && s.btnDis]}
@@ -179,7 +219,8 @@ export default function TracingCanvas({ label, labelType = 'letter', onComplete 
           disabled={strokes.length === 0}
           activeOpacity={0.8}
         >
-          <Text style={s.btnTxt}>✅  Done!</Text>
+          <Ionicons name="checkmark-circle-outline" size={16} color="#fff" style={{ marginRight: 6 }} />
+          <Text style={s.btnTxt}>Done!</Text>
         </TouchableOpacity>
       </View>
 
@@ -204,9 +245,16 @@ const s = StyleSheet.create({
     backgroundColor: '#FAFCFF', elevation: 6,
   },
   controls: { flexDirection: 'row', alignItems: 'center', marginTop: 18, gap: 14 },
-  hint: { fontSize: 14, color: colors.textLight, fontWeight: '600', flex: 1 },
-  clearBtn: { backgroundColor: colors.warning, paddingHorizontal: 22, paddingVertical: 12, borderRadius: 14, elevation: 2 },
-  doneBtn: { backgroundColor: colors.success, paddingHorizontal: 26, paddingVertical: 12, borderRadius: 14, elevation: 2 },
+  hintRow: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+  hint: { fontSize: 14, color: colors.textLight, fontWeight: '600' },
+  clearBtn: {
+    backgroundColor: colors.warning, paddingHorizontal: 22, paddingVertical: 12,
+    borderRadius: 14, elevation: 2, flexDirection: 'row', alignItems: 'center',
+  },
+  doneBtn: {
+    backgroundColor: colors.success, paddingHorizontal: 26, paddingVertical: 12,
+    borderRadius: 14, elevation: 2, flexDirection: 'row', alignItems: 'center',
+  },
   btnDis: { backgroundColor: colors.border },
   btnTxt: { color: '#fff', fontWeight: '800', fontSize: 16 },
 });

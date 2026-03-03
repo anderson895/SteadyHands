@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal,
 } from 'react-native';
+import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
 import { saveSession } from '../../src/database/db';
 import { colors, fonts, shadows } from '../../src/constants/theme';
@@ -14,10 +15,34 @@ type Category = 'letters' | 'numbers' | 'shapes' | 'dots' | null;
 type ExerciseItem = { type: string; item: any } | null;
 
 const CATEGORIES = [
-  { id: 'letters',  label: 'Letters A–Z',       emoji: '🔤', color: '#FF6B6B', desc: 'Trace the alphabet' },
-  { id: 'numbers',  label: 'Numbers 0–9',        emoji: '🔢', color: '#4A90D9', desc: 'Trace numbers 0 to 9' },
-  { id: 'shapes',   label: 'Basic Shapes',       emoji: '🔷', color: '#4CAF50', desc: 'Circles, squares & more' },
-  { id: 'dots',     label: 'Connect the Dots',   emoji: '🔗', color: '#9B59B6', desc: 'Connect dots to form pictures' },
+  {
+    id: 'letters',
+    label: 'Letters A–Z',
+    icon: <MaterialCommunityIcons name="alphabetical" size={44} color="#FF6B6B" />,
+    color: '#FF6B6B',
+    desc: 'Trace the alphabet',
+  },
+  {
+    id: 'numbers',
+    label: 'Numbers 0–9',
+    icon: <MaterialCommunityIcons name="numeric" size={44} color="#4A90D9" />,
+    color: '#4A90D9',
+    desc: 'Trace numbers 0 to 9',
+  },
+  {
+    id: 'shapes',
+    label: 'Basic Shapes',
+    icon: <MaterialCommunityIcons name="shape-outline" size={44} color="#4CAF50" />,
+    color: '#4CAF50',
+    desc: 'Circles, squares & more',
+  },
+  {
+    id: 'dots',
+    label: 'Connect the Dots',
+    icon: <MaterialCommunityIcons name="dots-horizontal-circle-outline" size={44} color="#9B59B6" />,
+    color: '#9B59B6',
+    desc: 'Connect dots to form pictures',
+  },
 ] as const;
 
 export default function ExercisesScreen() {
@@ -40,7 +65,10 @@ export default function ExercisesScreen() {
   if (!selectedCategory) {
     return (
       <ScrollView contentContainerStyle={styles.homeContent}>
-        <Text style={styles.greeting}>Hello, {user?.name?.split(' ')[0]}! 👋</Text>
+        <View style={styles.greetingRow}>
+          <Ionicons name="hand-right-outline" size={28} color={colors.primary} style={{ marginRight: 8 }} />
+          <Text style={styles.greeting}>Hello, {user?.name?.split(' ')[0]}!</Text>
+        </View>
         <Text style={styles.greetingSub}>What would you like to practice today?</Text>
 
         <View style={styles.grid}>
@@ -48,14 +76,14 @@ export default function ExercisesScreen() {
             <TouchableOpacity
               key={cat.id}
               style={[styles.catCard, { borderTopColor: cat.color }]}
-              onPress={() => setSelectedCategory(cat.id)}
+              onPress={() => setSelectedCategory(cat.id as Category)}
               activeOpacity={0.85}
             >
-              <Text style={styles.catEmoji}>{cat.emoji}</Text>
+              <View style={styles.catIconWrap}>{cat.icon}</View>
               <Text style={styles.catLabel}>{cat.label}</Text>
               <Text style={styles.catDesc}>{cat.desc}</Text>
               <View style={[styles.catArrow, { backgroundColor: cat.color }]}>
-                <Text style={styles.catArrowText}>→</Text>
+                <Ionicons name="arrow-forward" size={16} color="#fff" />
               </View>
             </TouchableOpacity>
           ))}
@@ -63,7 +91,7 @@ export default function ExercisesScreen() {
 
         {lastResult && (
           <View style={styles.lastResultBanner}>
-            <Text style={styles.lastResultIcon}>🏆</Text>
+            <Ionicons name="trophy" size={32} color={colors.yellow} style={{ marginRight: 14 }} />
             <View style={styles.lastResultInfo}>
               <Text style={styles.lastResultTitle}>Last completed: "{lastResult.label}"</Text>
               <Text style={styles.lastResultSub}>
@@ -77,12 +105,16 @@ export default function ExercisesScreen() {
   }
 
   // ── Sub-screens ──────────────────────────────────────────────────
-  const BackHeader = ({ title }: { title: string }) => (
+  const BackHeader = ({ title, iconName }: { title: string; iconName: keyof typeof Ionicons.glyphMap }) => (
     <View style={styles.subHeader}>
       <TouchableOpacity onPress={() => setSelectedCategory(null)} style={styles.backBtn}>
-        <Text style={styles.backText}>←  Back</Text>
+        <Ionicons name="arrow-back" size={16} color="#fff" style={{ marginRight: 6 }} />
+        <Text style={styles.backText}>Back</Text>
       </TouchableOpacity>
-      <Text style={styles.subTitle}>{title}</Text>
+      <View style={styles.subTitleRow}>
+        <Ionicons name={iconName} size={20} color={colors.text} style={{ marginRight: 6 }} />
+        <Text style={styles.subTitle}>{title}</Text>
+      </View>
       <View style={{ width: 90 }} />
     </View>
   );
@@ -90,7 +122,7 @@ export default function ExercisesScreen() {
   if (selectedCategory === 'letters') {
     return (
       <View style={styles.flex}>
-        <BackHeader title="🔤  Letters A–Z" />
+        <BackHeader title="Letters A–Z" iconName="text-outline" />
         <ScrollView contentContainerStyle={styles.itemGrid}>
           {LETTERS.map((l, i) => (
             <TouchableOpacity
@@ -110,7 +142,7 @@ export default function ExercisesScreen() {
   if (selectedCategory === 'numbers') {
     return (
       <View style={styles.flex}>
-        <BackHeader title="🔢  Numbers 0–9" />
+        <BackHeader title="Numbers 0–9" iconName="calculator-outline" />
         <ScrollView contentContainerStyle={styles.itemGrid}>
           {NUMBERS.map((n, i) => (
             <TouchableOpacity
@@ -130,7 +162,7 @@ export default function ExercisesScreen() {
   if (selectedCategory === 'shapes') {
     return (
       <View style={styles.flex}>
-        <BackHeader title="🔷  Basic Shapes" />
+        <BackHeader title="Basic Shapes" iconName="shapes-outline" />
         <ScrollView contentContainerStyle={styles.shapeGrid}>
           {SHAPES.map(shape => (
             <TouchableOpacity
@@ -151,7 +183,7 @@ export default function ExercisesScreen() {
   if (selectedCategory === 'dots') {
     return (
       <View style={styles.flex}>
-        <BackHeader title="🔗  Connect the Dots" />
+        <BackHeader title="Connect the Dots" iconName="git-network-outline" />
         <ScrollView contentContainerStyle={styles.shapeGrid}>
           {DOT_PATTERNS.map(pattern => (
             <TouchableOpacity
@@ -161,7 +193,10 @@ export default function ExercisesScreen() {
             >
               <Text style={styles.dotEmoji}>{pattern.emoji}</Text>
               <Text style={styles.dotName}>{pattern.name}</Text>
-              <Text style={styles.dotCount}>{pattern.dots.length} dots</Text>
+              <View style={styles.dotCountRow}>
+                <Ionicons name="ellipse-outline" size={12} color={colors.textLight} style={{ marginRight: 4 }} />
+                <Text style={styles.dotCount}>{pattern.dots.length} dots</Text>
+              </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -185,20 +220,31 @@ function ExerciseModal({
 }) {
   if (!exercise) return null;
   const { type, item } = exercise;
+
   const title =
     type === 'letter' ? `Trace Letter  ${item}` :
     type === 'number' ? `Trace Number  ${item}` :
     type === 'shape'  ? `Trace a ${item.name}` :
     `Connect the Dots — ${item.name}`;
 
+  const headerIcon: keyof typeof Ionicons.glyphMap =
+    type === 'letter' ? 'text-outline' :
+    type === 'number' ? 'calculator-outline' :
+    type === 'shape'  ? 'shapes-outline' :
+    'git-network-outline';
+
   return (
     <Modal visible animationType="slide" presentationStyle="pageSheet">
       <View style={styles.modal}>
         <View style={styles.modalHeader}>
           <TouchableOpacity style={styles.modalClose} onPress={onClose}>
-            <Text style={styles.modalCloseText}>✕  Close</Text>
+            <Ionicons name="close" size={16} color="#fff" style={{ marginRight: 6 }} />
+            <Text style={styles.modalCloseText}>Close</Text>
           </TouchableOpacity>
-          <Text style={styles.modalTitle}>{title}</Text>
+          <View style={styles.subTitleRow}>
+            <Ionicons name={headerIcon} size={18} color={colors.text} style={{ marginRight: 6 }} />
+            <Text style={styles.modalTitle}>{title}</Text>
+          </View>
           <View style={{ width: 90 }} />
         </View>
         <View style={styles.modalBody}>
@@ -230,7 +276,9 @@ function ExerciseModal({
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.background },
   homeContent: { padding: 20, alignItems: 'center' },
-  greeting: { fontSize: fonts.heading, fontWeight: '800', color: colors.text, marginTop: 8, textAlign: 'center' },
+
+  greetingRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
+  greeting: { fontSize: fonts.heading, fontWeight: '800', color: colors.text, textAlign: 'center' },
   greetingSub: { fontSize: 16, color: colors.textLight, marginTop: 6, marginBottom: 24, textAlign: 'center' },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 16, maxWidth: 900, width: '100%' },
@@ -243,11 +291,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 6,
     ...shadows.card,
   },
-  catEmoji: { fontSize: 52, marginBottom: 10 },
+  catIconWrap: { marginBottom: 10 },
   catLabel: { fontSize: 17, fontWeight: '800', color: colors.text, textAlign: 'center', marginBottom: 6 },
   catDesc: { fontSize: 13, color: colors.textLight, textAlign: 'center', marginBottom: 14 },
-  catArrow: { borderRadius: 12, paddingHorizontal: 16, paddingVertical: 6 },
-  catArrowText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  catArrow: { borderRadius: 12, paddingHorizontal: 16, paddingVertical: 6, flexDirection: 'row', alignItems: 'center' },
 
   lastResultBanner: {
     flexDirection: 'row',
@@ -262,7 +309,6 @@ const styles = StyleSheet.create({
     borderLeftColor: colors.yellow,
     ...shadows.card,
   },
-  lastResultIcon: { fontSize: 32, marginRight: 14 },
   lastResultInfo: { flex: 1 },
   lastResultTitle: { fontSize: 16, fontWeight: '700', color: colors.text },
   lastResultSub: { fontSize: 14, color: colors.textLight, marginTop: 3 },
@@ -274,8 +320,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white, elevation: 3,
     borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  backBtn: { backgroundColor: colors.primary, paddingHorizontal: 18, paddingVertical: 10, borderRadius: 12 },
+  backBtn: {
+    backgroundColor: colors.primary, paddingHorizontal: 18, paddingVertical: 10,
+    borderRadius: 12, flexDirection: 'row', alignItems: 'center',
+  },
   backText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  subTitleRow: { flexDirection: 'row', alignItems: 'center' },
   subTitle: { fontSize: fonts.subheading, fontWeight: '800', color: colors.text },
 
   itemGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', padding: 16, gap: 10 },
@@ -294,7 +344,8 @@ const styles = StyleSheet.create({
   },
   dotEmoji: { fontSize: 56, marginBottom: 8 },
   dotName: { fontSize: 17, fontWeight: '800', color: colors.text },
-  dotCount: { fontSize: 13, color: colors.textLight, marginTop: 4 },
+  dotCountRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  dotCount: { fontSize: 13, color: colors.textLight },
 
   // Modal
   modal: { flex: 1, backgroundColor: colors.background },
@@ -304,7 +355,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white, elevation: 4,
     borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  modalClose: { backgroundColor: colors.danger, paddingHorizontal: 18, paddingVertical: 10, borderRadius: 12 },
+  modalClose: {
+    backgroundColor: colors.danger, paddingHorizontal: 18, paddingVertical: 10,
+    borderRadius: 12, flexDirection: 'row', alignItems: 'center',
+  },
   modalCloseText: { color: '#fff', fontWeight: '700', fontSize: 15 },
   modalTitle: { fontSize: fonts.subheading, fontWeight: '800', color: colors.text },
   modalBody: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
